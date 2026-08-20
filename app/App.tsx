@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
-const API = 'http://localhost:42441';
+// Use your machine's LAN IP (not localhost) so phones on the same Wi-Fi can reach it.
+const API = 'http://192.168.1.122:42441';
 
 type Axis = {
   axis_id: string;
