@@ -1,0 +1,3 @@
+Axes: AxisId, Name, Title, Summary, Scenarios, Considerations, CountOfConsiderations, CountOfPros, CountOfCons
+Scenarios: ScenarioId, Name, Axis, AxisTitle, Title, Description
+Considerations: ConsiderationId, Name, Axis, AxisTitle, IsPro, Statement, Kind

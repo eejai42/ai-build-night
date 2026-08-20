@@ -1,0 +1,40 @@
+{
+  "ShowHidden": false,
+  "ShowAllFiles": false,
+  "CurrentPath": null,
+  "SSoTmeProjectFiles": null,
+  "SSoTmeProjectId": "ece81fe6-f81b-4238-beca-e6bdb2418192",
+  "Name": "AI Build Night",
+  "ProjectSettings": [
+    {
+      "Name": "project-name",
+      "Value": "AI Build Night"
+    }
+  ],
+  "ProjectTranspilers": [
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "minimizerulebook",
+      "RelativePath": "/effortless-rulebook",
+      "CommandLine": "minimize-rulebook -i effortless-rulebook.json",
+      "IsDisabled": false,
+      "PinnedVersion": "v2026.07.08.1133"
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktopostgres",
+      "RelativePath": "/postgres",
+      "CommandLine": "rulebook-to-postgres -i ../effortless-rulebook/effortless-rulebook.json",
+      "IsDisabled": false,
+      "PinnedVersion": "v2026.08.09.0157"
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "effortlessrulebookeditor",
+      "RelativePath": "/effortless-rulebook",
+      "CommandLine": "effortless-rulebook-editor -i effortless-rulebook.json -p rulebookPath=effortless-rulebook.json -p dockerfilePath=docker/Dockerfile",
+      "IsDisabled": false,
+      "PinnedVersion": "v2026.08.11.2344"
+    }
+  ]
+}

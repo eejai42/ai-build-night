@@ -1,0 +1,43 @@
+{
+  "Axes": [
+    {
+      "AxisId": "essay-vs-ai-conversation",
+      "Title": "Essay Writing vs. AI-Assisted Exploration",
+      "Summary": "Instead of assigning a written essay, the assignment becomes an exploratory conversation with an LLM, submitted as a shareable conversation link rather than a document."
+    }
+  ],
+  "Scenarios": [
+    {
+      "ScenarioId": "llm-conversation-assignment",
+      "Axis": "essay-vs-ai-conversation",
+      "Title": "LLM Conversation as the Assignment",
+      "Description": "Rather than composing an essay about a subject, the student explores that same subject in conversation form with an LLM. The result submitted is a link to the conversation, not a document. The teacher can then ask the LLM about the conversation, or read the transcript directly."
+    }
+  ],
+  "Considerations": [
+    {
+      "ConsiderationId": "authentic-exploration",
+      "Axis": "essay-vs-ai-conversation",
+      "IsPro": true,
+      "Statement": "A conversation format encourages genuine back-and-forth exploration of ideas rather than front-loading a fixed thesis."
+    },
+    {
+      "ConsiderationId": "loses-writing-practice",
+      "Axis": "essay-vs-ai-conversation",
+      "IsPro": false,
+      "Statement": "Students get less practice organizing their own thoughts into sustained, structured written prose."
+    },
+    {
+      "ConsiderationId": "teacher-can-audit-reasoning",
+      "Axis": "essay-vs-ai-conversation",
+      "IsPro": true,
+      "Statement": "The teacher can review the full conversation transcript, or ask the LLM directly about it, giving visibility into the student\u0027s reasoning process that a finished essay doesn\u0027t show."
+    },
+    {
+      "ConsiderationId": "conversation-quality-varies",
+      "Axis": "essay-vs-ai-conversation",
+      "IsPro": false,
+      "Statement": "The quality of what a student learns depends heavily on how well they prompt the LLM, which is an unevenly distributed skill."
+    }
+  ]
+}
