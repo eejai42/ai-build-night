@@ -13,9 +13,13 @@ import {
   View,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 
 // Use your machine's LAN IP (not localhost) so phones on the same Wi-Fi can reach it.
 const API = 'http://192.168.1.122:42441';
+
+const CACHE_KEY = 'ai-build-night:cache:v1';
 
 type Topic = {
   topic_id: string;
@@ -77,6 +81,15 @@ type StrategyScore = {
   criterion_icon: string | null;
   score: number;
   rationale: string | null;
+};
+
+type CachedData = {
+  topics: Topic[];
+  criteria: Criterion[];
+  strategies: Strategy[];
+  scenarios: Scenario[];
+  considerations: Consideration[];
+  scores: StrategyScore[];
 };
 
 type Tab = 'topics' | 'criteria';
@@ -322,6 +335,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editState, setEditState] = useState<EditModalState | null>(null);
+  const [isOnline, setIsOnline] = useState(true);
+  const [isOffline, setIsOffline] = useState(false);
 
   const reload = useCallback(() => {
     setLoading(true);
@@ -334,20 +349,58 @@ export default function App() {
       fetch(`${API}/api/tables/StrategyScores`).then((r) => r.json()),
     ])
       .then(([t, cr, s, sc, co, sco]) => {
-        setTopics(t.rows);
-        setCriteria(cr.rows.sort((a: Criterion, b: Criterion) => (a.sort_order ?? 0) - (b.sort_order ?? 0)));
-        setStrategies(s.rows);
-        setScenarios(sc.rows);
-        setConsiderations(co.rows);
-        setScores(sco.rows);
+        const data: CachedData = {
+          topics: t.rows,
+          criteria: cr.rows.sort((a: Criterion, b: Criterion) => (a.sort_order ?? 0) - (b.sort_order ?? 0)),
+          strategies: s.rows,
+          scenarios: sc.rows,
+          considerations: co.rows,
+          scores: sco.rows,
+        };
+        setTopics(data.topics);
+        setCriteria(data.criteria);
+        setStrategies(data.strategies);
+        setScenarios(data.scenarios);
+        setConsiderations(data.considerations);
+        setScores(data.scores);
         setError(null);
+        setIsOffline(false);
+        AsyncStorage.setItem(CACHE_KEY, JSON.stringify(data)).catch(() => {});
       })
-      .catch((e) => setError(String(e)))
+      .catch(async (e) => {
+        const cached = await AsyncStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const data: CachedData = JSON.parse(cached);
+          setTopics(data.topics);
+          setCriteria(data.criteria);
+          setStrategies(data.strategies);
+          setScenarios(data.scenarios);
+          setConsiderations(data.considerations);
+          setScores(data.scores);
+          setError(null);
+          setIsOffline(true);
+        } else {
+          setError(String(e));
+        }
+      })
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
     reload();
+  }, [reload]);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      const online = Boolean(state.isConnected);
+      setIsOnline((prevOnline) => {
+        if (online && !prevOnline) {
+          reload();
+        }
+        return online;
+      });
+    });
+    return unsubscribe;
   }, [reload]);
 
   const switchTab = (t: Tab) => {
@@ -373,6 +426,8 @@ export default function App() {
     );
   }
 
+  const canEdit = isOnline && !isOffline;
+
   const strategyScoreMap = (strategyId: string) => scores.filter((s) => s.strategy === strategyId);
 
   // ---- Screens ----
@@ -388,22 +443,24 @@ export default function App() {
         ListHeaderComponent={
           <View style={styles.headerRow}>
             <Text style={styles.h1}>Topics</Text>
-            <AddButton
-              label="+ Add Topic"
-              onPress={() =>
-                setEditState({
-                  table: 'Topics',
-                  rowId: null,
-                  fields: [
-                    { key: 'TopicId', label: 'Topic Id (slug)', kind: 'text' },
-                    { key: 'Title', label: 'Title', kind: 'text' },
-                    { key: 'Icon', label: 'Icon (single emoji)', kind: 'text' },
-                    { key: 'Summary', label: 'Summary', kind: 'multiline' },
-                  ],
-                  values: { TopicId: '', Title: '', Icon: '', Summary: '' },
-                })
-              }
-            />
+            {canEdit && (
+              <AddButton
+                label="+ Add Topic"
+                onPress={() =>
+                  setEditState({
+                    table: 'Topics',
+                    rowId: null,
+                    fields: [
+                      { key: 'TopicId', label: 'Topic Id (slug)', kind: 'text' },
+                      { key: 'Title', label: 'Title', kind: 'text' },
+                      { key: 'Icon', label: 'Icon (single emoji)', kind: 'text' },
+                      { key: 'Summary', label: 'Summary', kind: 'multiline' },
+                    ],
+                    values: { TopicId: '', Title: '', Icon: '', Summary: '' },
+                  })
+                }
+              />
+            )}
           </View>
         }
         renderItem={({ item }) => (
@@ -413,20 +470,22 @@ export default function App() {
                 {item.icon ? `${item.icon} ` : ''}
                 {item.title}
               </Text>
-              <EditPencil
-                onPress={() =>
-                  setEditState({
-                    table: 'Topics',
-                    rowId: item.topic_id,
-                    fields: [
-                      { key: 'Title', label: 'Title', kind: 'text' },
-                      { key: 'Icon', label: 'Icon (single emoji)', kind: 'text' },
-                      { key: 'Summary', label: 'Summary', kind: 'multiline' },
-                    ],
-                    values: { Title: item.title, Icon: item.icon ?? '', Summary: item.summary ?? '' },
-                  })
-                }
-              />
+              {canEdit && (
+                <EditPencil
+                  onPress={() =>
+                    setEditState({
+                      table: 'Topics',
+                      rowId: item.topic_id,
+                      fields: [
+                        { key: 'Title', label: 'Title', kind: 'text' },
+                        { key: 'Icon', label: 'Icon (single emoji)', kind: 'text' },
+                        { key: 'Summary', label: 'Summary', kind: 'multiline' },
+                      ],
+                      values: { Title: item.title, Icon: item.icon ?? '', Summary: item.summary ?? '' },
+                    })
+                  }
+                />
+              )}
             </View>
             {item.summary ? <Text style={styles.cardBody}>{item.summary}</Text> : null}
             <Text style={styles.counts}>{item.count_of_strategies} strategies</Text>
@@ -453,31 +512,33 @@ export default function App() {
                 {topic?.icon ? `${topic.icon} ` : ''}
                 {topic?.title ?? view.topicId}
               </Text>
-              <AddButton
-                label="+ Add Strategy"
-                onPress={() =>
-                  setEditState({
-                    table: 'Strategies',
-                    rowId: null,
-                    fields: [
-                      { key: 'StrategyId', label: 'Strategy Id (slug)', kind: 'text' },
-                      { key: 'Topic', label: 'Topic Id', kind: 'text' },
-                      { key: 'Title', label: 'Title', kind: 'text' },
-                      { key: 'Summary', label: 'Summary', kind: 'multiline' },
-                      { key: 'Verdict', label: 'Verdict', kind: 'multiline' },
-                      { key: 'RecommendedFor', label: 'Recommended For', kind: 'text' },
-                    ],
-                    values: {
-                      StrategyId: '',
-                      Topic: view.topicId,
-                      Title: '',
-                      Summary: '',
-                      Verdict: '',
-                      RecommendedFor: '',
-                    },
-                  })
-                }
-              />
+              {canEdit && (
+                <AddButton
+                  label="+ Add Strategy"
+                  onPress={() =>
+                    setEditState({
+                      table: 'Strategies',
+                      rowId: null,
+                      fields: [
+                        { key: 'StrategyId', label: 'Strategy Id (slug)', kind: 'text' },
+                        { key: 'Topic', label: 'Topic Id', kind: 'text' },
+                        { key: 'Title', label: 'Title', kind: 'text' },
+                        { key: 'Summary', label: 'Summary', kind: 'multiline' },
+                        { key: 'Verdict', label: 'Verdict', kind: 'multiline' },
+                        { key: 'RecommendedFor', label: 'Recommended For', kind: 'text' },
+                      ],
+                      values: {
+                        StrategyId: '',
+                        Topic: view.topicId,
+                        Title: '',
+                        Summary: '',
+                        Verdict: '',
+                        RecommendedFor: '',
+                      },
+                    })
+                  }
+                />
+              )}
             </View>
           </View>
         }
@@ -491,26 +552,28 @@ export default function App() {
               <View style={styles.cardHeaderRow}>
                 <Text style={styles.cardTitle}>{item.title}</Text>
                 {item.average_score ? <ScoreBadge score={Number(item.average_score)} /> : null}
-                <EditPencil
-                  onPress={() =>
-                    setEditState({
-                      table: 'Strategies',
-                      rowId: item.strategy_id,
-                      fields: [
-                        { key: 'Title', label: 'Title', kind: 'text' },
-                        { key: 'Summary', label: 'Summary', kind: 'multiline' },
-                        { key: 'Verdict', label: 'Verdict', kind: 'multiline' },
-                        { key: 'RecommendedFor', label: 'Recommended For', kind: 'text' },
-                      ],
-                      values: {
-                        Title: item.title,
-                        Summary: item.summary ?? '',
-                        Verdict: item.verdict ?? '',
-                        RecommendedFor: item.recommended_for ?? '',
-                      },
-                    })
-                  }
-                />
+                {canEdit && (
+                  <EditPencil
+                    onPress={() =>
+                      setEditState({
+                        table: 'Strategies',
+                        rowId: item.strategy_id,
+                        fields: [
+                          { key: 'Title', label: 'Title', kind: 'text' },
+                          { key: 'Summary', label: 'Summary', kind: 'multiline' },
+                          { key: 'Verdict', label: 'Verdict', kind: 'multiline' },
+                          { key: 'RecommendedFor', label: 'Recommended For', kind: 'text' },
+                        ],
+                        values: {
+                          Title: item.title,
+                          Summary: item.summary ?? '',
+                          Verdict: item.verdict ?? '',
+                          RecommendedFor: item.recommended_for ?? '',
+                        },
+                      })
+                    }
+                  />
+                )}
               </View>
               {item.summary ? <Text style={styles.cardBody}>{item.summary}</Text> : null}
               <MiniScoreBars scores={itemScores} />
@@ -567,7 +630,7 @@ export default function App() {
 
             <View style={styles.headerRow}>
               <Text style={styles.h2}>Scores</Text>
-              {unscoredCriteria.length > 0 && (
+              {canEdit && unscoredCriteria.length > 0 && (
                 <AddButton
                   label="+ Score"
                   onPress={() =>
@@ -605,19 +668,21 @@ export default function App() {
                     {sc.criterion_title ?? sc.criterion}
                   </Text>
                   <ScoreBadge score={sc.score} />
-                  <EditPencil
-                    onPress={() =>
-                      setEditState({
-                        table: 'StrategyScores',
-                        rowId: sc.score_id,
-                        fields: [
-                          { key: 'Score', label: 'Score (1-5)', kind: 'score' },
-                          { key: 'Rationale', label: 'Rationale', kind: 'multiline' },
-                        ],
-                        values: { Score: sc.score, Rationale: sc.rationale ?? '' },
-                      })
-                    }
-                  />
+                  {canEdit && (
+                    <EditPencil
+                      onPress={() =>
+                        setEditState({
+                          table: 'StrategyScores',
+                          rowId: sc.score_id,
+                          fields: [
+                            { key: 'Score', label: 'Score (1-5)', kind: 'score' },
+                            { key: 'Rationale', label: 'Rationale', kind: 'multiline' },
+                          ],
+                          values: { Score: sc.score, Rationale: sc.rationale ?? '' },
+                        })
+                      }
+                    />
+                  )}
                 </View>
                 {sc.rationale ? <Text style={styles.cardBody}>{sc.rationale}</Text> : null}
               </View>
@@ -625,40 +690,44 @@ export default function App() {
 
             <View style={styles.headerRow}>
               <Text style={styles.h2}>Scenarios</Text>
-              <AddButton
-                label="+ Add"
-                onPress={() =>
-                  setEditState({
-                    table: 'Scenarios',
-                    rowId: null,
-                    fields: [
-                      { key: 'ScenarioId', label: 'Scenario Id (slug)', kind: 'text' },
-                      { key: 'Strategy', label: 'Strategy Id', kind: 'text' },
-                      { key: 'Title', label: 'Title', kind: 'text' },
-                      { key: 'Description', label: 'Description', kind: 'multiline' },
-                    ],
-                    values: { ScenarioId: '', Strategy: view.strategyId, Title: '', Description: '' },
-                  })
-                }
-              />
+              {canEdit && (
+                <AddButton
+                  label="+ Add"
+                  onPress={() =>
+                    setEditState({
+                      table: 'Scenarios',
+                      rowId: null,
+                      fields: [
+                        { key: 'ScenarioId', label: 'Scenario Id (slug)', kind: 'text' },
+                        { key: 'Strategy', label: 'Strategy Id', kind: 'text' },
+                        { key: 'Title', label: 'Title', kind: 'text' },
+                        { key: 'Description', label: 'Description', kind: 'multiline' },
+                      ],
+                      values: { ScenarioId: '', Strategy: view.strategyId, Title: '', Description: '' },
+                    })
+                  }
+                />
+              )}
             </View>
             {strategyScenarios.map((s) => (
               <View key={s.scenario_id} style={styles.card}>
                 <View style={styles.cardHeaderRow}>
                   <Text style={styles.cardTitle}>{s.title}</Text>
-                  <EditPencil
-                    onPress={() =>
-                      setEditState({
-                        table: 'Scenarios',
-                        rowId: s.scenario_id,
-                        fields: [
-                          { key: 'Title', label: 'Title', kind: 'text' },
-                          { key: 'Description', label: 'Description', kind: 'multiline' },
-                        ],
-                        values: { Title: s.title, Description: s.description ?? '' },
-                      })
-                    }
-                  />
+                  {canEdit && (
+                    <EditPencil
+                      onPress={() =>
+                        setEditState({
+                          table: 'Scenarios',
+                          rowId: s.scenario_id,
+                          fields: [
+                            { key: 'Title', label: 'Title', kind: 'text' },
+                            { key: 'Description', label: 'Description', kind: 'multiline' },
+                          ],
+                          values: { Title: s.title, Description: s.description ?? '' },
+                        })
+                      }
+                    />
+                  )}
                 </View>
                 {s.description ? <Text style={styles.cardBody}>{s.description}</Text> : null}
               </View>
@@ -666,48 +735,52 @@ export default function App() {
 
             <View style={styles.headerRow}>
               <Text style={styles.h2}>Pros ({pros.length})</Text>
-              <AddButton
-                label="+ Add"
-                onPress={() =>
-                  setEditState({
-                    table: 'Considerations',
-                    rowId: null,
-                    fields: [
-                      { key: 'ConsiderationId', label: 'Consideration Id (slug)', kind: 'text' },
-                      { key: 'Strategy', label: 'Strategy Id', kind: 'text' },
-                      { key: 'Criterion', label: 'Criterion Id (optional)', kind: 'text' },
-                      { key: 'Statement', label: 'Statement', kind: 'multiline' },
-                      { key: 'IsPro', label: 'Is Pro', kind: 'boolean' },
-                    ],
-                    values: {
-                      ConsiderationId: '',
-                      Strategy: view.strategyId,
-                      Criterion: '',
-                      Statement: '',
-                      IsPro: true,
-                    },
-                  })
-                }
-              />
+              {canEdit && (
+                <AddButton
+                  label="+ Add"
+                  onPress={() =>
+                    setEditState({
+                      table: 'Considerations',
+                      rowId: null,
+                      fields: [
+                        { key: 'ConsiderationId', label: 'Consideration Id (slug)', kind: 'text' },
+                        { key: 'Strategy', label: 'Strategy Id', kind: 'text' },
+                        { key: 'Criterion', label: 'Criterion Id (optional)', kind: 'text' },
+                        { key: 'Statement', label: 'Statement', kind: 'multiline' },
+                        { key: 'IsPro', label: 'Is Pro', kind: 'boolean' },
+                      ],
+                      values: {
+                        ConsiderationId: '',
+                        Strategy: view.strategyId,
+                        Criterion: '',
+                        Statement: '',
+                        IsPro: true,
+                      },
+                    })
+                  }
+                />
+              )}
             </View>
             {pros.map((c) => (
               <View key={c.consideration_id} style={[styles.card, styles.proCard]}>
                 <View style={styles.cardHeaderRow}>
                   <Text style={styles.cardBody}>{c.statement}</Text>
-                  <EditPencil
-                    onPress={() =>
-                      setEditState({
-                        table: 'Considerations',
-                        rowId: c.consideration_id,
-                        fields: [
-                          { key: 'Statement', label: 'Statement', kind: 'multiline' },
-                          { key: 'Criterion', label: 'Criterion Id (optional)', kind: 'text' },
-                          { key: 'IsPro', label: 'Is Pro', kind: 'boolean' },
-                        ],
-                        values: { Statement: c.statement, Criterion: c.criterion ?? '', IsPro: c.is_pro },
-                      })
-                    }
-                  />
+                  {canEdit && (
+                    <EditPencil
+                      onPress={() =>
+                        setEditState({
+                          table: 'Considerations',
+                          rowId: c.consideration_id,
+                          fields: [
+                            { key: 'Statement', label: 'Statement', kind: 'multiline' },
+                            { key: 'Criterion', label: 'Criterion Id (optional)', kind: 'text' },
+                            { key: 'IsPro', label: 'Is Pro', kind: 'boolean' },
+                          ],
+                          values: { Statement: c.statement, Criterion: c.criterion ?? '', IsPro: c.is_pro },
+                        })
+                      }
+                    />
+                  )}
                 </View>
                 {c.criterion_title ? <Text style={styles.tag}>{c.criterion_title}</Text> : null}
               </View>
@@ -715,48 +788,52 @@ export default function App() {
 
             <View style={styles.headerRow}>
               <Text style={styles.h2}>Cons ({cons.length})</Text>
-              <AddButton
-                label="+ Add"
-                onPress={() =>
-                  setEditState({
-                    table: 'Considerations',
-                    rowId: null,
-                    fields: [
-                      { key: 'ConsiderationId', label: 'Consideration Id (slug)', kind: 'text' },
-                      { key: 'Strategy', label: 'Strategy Id', kind: 'text' },
-                      { key: 'Criterion', label: 'Criterion Id (optional)', kind: 'text' },
-                      { key: 'Statement', label: 'Statement', kind: 'multiline' },
-                      { key: 'IsPro', label: 'Is Pro', kind: 'boolean' },
-                    ],
-                    values: {
-                      ConsiderationId: '',
-                      Strategy: view.strategyId,
-                      Criterion: '',
-                      Statement: '',
-                      IsPro: false,
-                    },
-                  })
-                }
-              />
+              {canEdit && (
+                <AddButton
+                  label="+ Add"
+                  onPress={() =>
+                    setEditState({
+                      table: 'Considerations',
+                      rowId: null,
+                      fields: [
+                        { key: 'ConsiderationId', label: 'Consideration Id (slug)', kind: 'text' },
+                        { key: 'Strategy', label: 'Strategy Id', kind: 'text' },
+                        { key: 'Criterion', label: 'Criterion Id (optional)', kind: 'text' },
+                        { key: 'Statement', label: 'Statement', kind: 'multiline' },
+                        { key: 'IsPro', label: 'Is Pro', kind: 'boolean' },
+                      ],
+                      values: {
+                        ConsiderationId: '',
+                        Strategy: view.strategyId,
+                        Criterion: '',
+                        Statement: '',
+                        IsPro: false,
+                      },
+                    })
+                  }
+                />
+              )}
             </View>
             {cons.map((c) => (
               <View key={c.consideration_id} style={[styles.card, styles.conCard]}>
                 <View style={styles.cardHeaderRow}>
                   <Text style={styles.cardBody}>{c.statement}</Text>
-                  <EditPencil
-                    onPress={() =>
-                      setEditState({
-                        table: 'Considerations',
-                        rowId: c.consideration_id,
-                        fields: [
-                          { key: 'Statement', label: 'Statement', kind: 'multiline' },
-                          { key: 'Criterion', label: 'Criterion Id (optional)', kind: 'text' },
-                          { key: 'IsPro', label: 'Is Pro', kind: 'boolean' },
-                        ],
-                        values: { Statement: c.statement, Criterion: c.criterion ?? '', IsPro: c.is_pro },
-                      })
-                    }
-                  />
+                  {canEdit && (
+                    <EditPencil
+                      onPress={() =>
+                        setEditState({
+                          table: 'Considerations',
+                          rowId: c.consideration_id,
+                          fields: [
+                            { key: 'Statement', label: 'Statement', kind: 'multiline' },
+                            { key: 'Criterion', label: 'Criterion Id (optional)', kind: 'text' },
+                            { key: 'IsPro', label: 'Is Pro', kind: 'boolean' },
+                          ],
+                          values: { Statement: c.statement, Criterion: c.criterion ?? '', IsPro: c.is_pro },
+                        })
+                      }
+                    />
+                  )}
                 </View>
                 {c.criterion_title ? <Text style={styles.tag}>{c.criterion_title}</Text> : null}
               </View>
@@ -774,33 +851,35 @@ export default function App() {
         ListHeaderComponent={
           <View style={styles.headerRow}>
             <Text style={styles.h1}>Criteria</Text>
-            <AddButton
-              label="+ Add Criterion"
-              onPress={() =>
-                setEditState({
-                  table: 'Criteria',
-                  rowId: null,
-                  fields: [
-                    { key: 'CriterionId', label: 'Criterion Id (slug)', kind: 'text' },
-                    { key: 'Title', label: 'Title', kind: 'text' },
-                    { key: 'Icon', label: 'Icon (single emoji)', kind: 'text' },
-                    { key: 'Description', label: 'Description', kind: 'multiline' },
-                    { key: 'HighScoreMeaning', label: 'What a 5 means', kind: 'text' },
-                    { key: 'LowScoreMeaning', label: 'What a 1 means', kind: 'text' },
-                    { key: 'SortOrder', label: 'Sort Order', kind: 'text' },
-                  ],
-                  values: {
-                    CriterionId: '',
-                    Title: '',
-                    Icon: '',
-                    Description: '',
-                    HighScoreMeaning: '',
-                    LowScoreMeaning: '',
-                    SortOrder: (criteria.length + 1) * 10,
-                  },
-                })
-              }
-            />
+            {canEdit && (
+              <AddButton
+                label="+ Add Criterion"
+                onPress={() =>
+                  setEditState({
+                    table: 'Criteria',
+                    rowId: null,
+                    fields: [
+                      { key: 'CriterionId', label: 'Criterion Id (slug)', kind: 'text' },
+                      { key: 'Title', label: 'Title', kind: 'text' },
+                      { key: 'Icon', label: 'Icon (single emoji)', kind: 'text' },
+                      { key: 'Description', label: 'Description', kind: 'multiline' },
+                      { key: 'HighScoreMeaning', label: 'What a 5 means', kind: 'text' },
+                      { key: 'LowScoreMeaning', label: 'What a 1 means', kind: 'text' },
+                      { key: 'SortOrder', label: 'Sort Order', kind: 'text' },
+                    ],
+                    values: {
+                      CriterionId: '',
+                      Title: '',
+                      Icon: '',
+                      Description: '',
+                      HighScoreMeaning: '',
+                      LowScoreMeaning: '',
+                      SortOrder: (criteria.length + 1) * 10,
+                    },
+                  })
+                }
+              />
+            )}
           </View>
         }
         renderItem={({ item }) => (
@@ -810,28 +889,30 @@ export default function App() {
                 {item.icon ? `${item.icon} ` : ''}
                 {item.title}
               </Text>
-              <EditPencil
-                onPress={() =>
-                  setEditState({
-                    table: 'Criteria',
-                    rowId: item.criterion_id,
-                    fields: [
-                      { key: 'Title', label: 'Title', kind: 'text' },
-                      { key: 'Icon', label: 'Icon (single emoji)', kind: 'text' },
-                      { key: 'Description', label: 'Description', kind: 'multiline' },
-                      { key: 'HighScoreMeaning', label: 'What a 5 means', kind: 'text' },
-                      { key: 'LowScoreMeaning', label: 'What a 1 means', kind: 'text' },
-                    ],
-                    values: {
-                      Title: item.title,
-                      Icon: item.icon ?? '',
-                      Description: item.description ?? '',
-                      HighScoreMeaning: item.high_score_meaning ?? '',
-                      LowScoreMeaning: item.low_score_meaning ?? '',
-                    },
-                  })
-                }
-              />
+              {canEdit && (
+                <EditPencil
+                  onPress={() =>
+                    setEditState({
+                      table: 'Criteria',
+                      rowId: item.criterion_id,
+                      fields: [
+                        { key: 'Title', label: 'Title', kind: 'text' },
+                        { key: 'Icon', label: 'Icon (single emoji)', kind: 'text' },
+                        { key: 'Description', label: 'Description', kind: 'multiline' },
+                        { key: 'HighScoreMeaning', label: 'What a 5 means', kind: 'text' },
+                        { key: 'LowScoreMeaning', label: 'What a 1 means', kind: 'text' },
+                      ],
+                      values: {
+                        Title: item.title,
+                        Icon: item.icon ?? '',
+                        Description: item.description ?? '',
+                        HighScoreMeaning: item.high_score_meaning ?? '',
+                        LowScoreMeaning: item.low_score_meaning ?? '',
+                      },
+                    })
+                  }
+                />
+              )}
             </View>
             {item.description ? <Text style={styles.cardBody}>{item.description}</Text> : null}
             <View style={styles.cardFooterRow}>
@@ -883,19 +964,21 @@ export default function App() {
                   {item.strategy_title ?? item.strategy}
                 </Text>
                 <ScoreBadge score={item.score} />
-                <EditPencil
-                  onPress={() =>
-                    setEditState({
-                      table: 'StrategyScores',
-                      rowId: item.score_id,
-                      fields: [
-                        { key: 'Score', label: 'Score (1-5)', kind: 'score' },
-                        { key: 'Rationale', label: 'Rationale', kind: 'multiline' },
-                      ],
-                      values: { Score: item.score, Rationale: item.rationale ?? '' },
-                    })
-                  }
-                />
+                {canEdit && (
+                  <EditPencil
+                    onPress={() =>
+                      setEditState({
+                        table: 'StrategyScores',
+                        rowId: item.score_id,
+                        fields: [
+                          { key: 'Score', label: 'Score (1-5)', kind: 'score' },
+                          { key: 'Rationale', label: 'Rationale', kind: 'multiline' },
+                        ],
+                        values: { Score: item.score, Rationale: item.rationale ?? '' },
+                      })
+                    }
+                  />
+                )}
               </View>
               {item.rationale ? <Text style={styles.cardBody}>{item.rationale}</Text> : null}
             </View>
@@ -907,6 +990,11 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {!canEdit ? (
+        <View style={styles.offlineBanner}>
+          <Text style={styles.offlineBannerText}>📴 Offline — showing saved data, editing disabled</Text>
+        </View>
+      ) : null}
       <View style={styles.body}>{body}</View>
       <EditModal state={editState} onClose={() => setEditState(null)} onSaved={reload} />
       <View style={styles.tabBar}>
@@ -1124,6 +1212,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     fontSize: 13,
+  },
+  offlineBanner: {
+    backgroundColor: '#fff3cd',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ffe69c',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  offlineBannerText: {
+    color: '#664d03',
+    fontSize: 12,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   tabBar: {
     flexDirection: 'row',
