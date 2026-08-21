@@ -120,6 +120,74 @@
       "pkFieldName": "ScenarioId",
       "pkValue": "Shaba",
       "at": "2026-08-21T00:27:33.495Z"
+    },
+    {
+      "type": "add-row",
+      "table": "Considerations",
+      "values": {
+        "ConsiderationId": "GHC",
+        "Strategy": "Hdbddnd",
+        "Statement": "Ghvhbb",
+        "IsPro": true
+      },
+      "pkFieldName": "ConsiderationId",
+      "pkValue": "GHC",
+      "at": "2026-08-21T00:39:43.860Z"
+    },
+    {
+      "type": "row-edit",
+      "table": "Considerations",
+      "rowId": "GHC",
+      "fields": {
+        "IsPro": false
+      },
+      "priorFields": {
+        "IsPro": true
+      },
+      "pkFieldName": "ConsiderationId",
+      "pkValue": "GHC",
+      "at": "2026-08-21T00:39:47.418Z"
+    },
+    {
+      "type": "row-edit",
+      "table": "Scenarios",
+      "rowId": "Shaba",
+      "fields": {
+        "Title": "Ghvhj"
+      },
+      "priorFields": {
+        "Title": ""
+      },
+      "pkFieldName": "ScenarioId",
+      "pkValue": "Shaba",
+      "at": "2026-08-21T00:40:00.060Z"
+    },
+    {
+      "type": "add-row",
+      "table": "Scenarios",
+      "values": {
+        "ScenarioId": "Vbbv",
+        "Strategy": "Hdbddnd",
+        "Title": "CMCC",
+        "Description": ""
+      },
+      "pkFieldName": "ScenarioId",
+      "pkValue": "Vbbv",
+      "at": "2026-08-21T00:40:08.230Z"
+    },
+    {
+      "type": "delete-row",
+      "table": "Scenarios",
+      "rowId": "Vbbv",
+      "priorValues": {
+        "scenario_id": "Vbbv",
+        "strategy": "Hdbddnd",
+        "title": "CMCC",
+        "description": ""
+      },
+      "pkFieldName": "ScenarioId",
+      "pkValue": "Vbbv",
+      "at": "2026-08-21T00:40:10.978Z"
     }
   ]
 }
