@@ -1,35 +1,202 @@
 {
-  "Axes": {
-    "Description": "Table: Axes. A distinct dimension, angle, or vector along which AI\u0027s impact on education can be examined -- e.g. \u0027Essay Writing vs. AI-Assisted Exploration\u0027. New axes can be added freely as the project\u0027s scope grows.",
+  "Topics": {
+    "Description": "Table: Topics. A broad domain in which AI-handling strategies are being compared -- e.g. \u0027AI in Education\u0027 or \u0027AI Regulation Approaches\u0027. New topics can be added freely as the project\u0027s scope grows.",
     "schema": [
       {
-        "name": "AxisId",
+        "name": "TopicId",
         "datatype": "string",
         "type": "raw",
         "nullable": false,
-        "Description": "Stored identifier for the axis. Slug form, e.g. \u0027essay-vs-ai-conversation\u0027."
+        "Description": "Stored identifier for the topic. Slug form, e.g. \u0027ai-in-education\u0027."
       },
       {
         "name": "Name",
         "datatype": "string",
         "type": "calculated",
         "nullable": false,
-        "Description": "Display alias for the axis.",
-        "formula": "={{AxisId}}"
+        "Description": "Display alias for the topic.",
+        "formula": "={{TopicId}}"
       },
       {
         "name": "Title",
         "datatype": "string",
         "type": "raw",
         "nullable": false,
-        "Description": "Short human-readable title of the axis, e.g. \u0027Essay Writing vs. AI-Assisted Exploration\u0027."
+        "Description": "Short human-readable title of the topic, e.g. \u0027AI in Education\u0027."
+      },
+      {
+        "name": "Icon",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "A single emoji representing this topic, used as a visual anchor in the UI."
       },
       {
         "name": "Summary",
         "datatype": "string",
         "type": "raw",
         "nullable": true,
-        "Description": "One or two sentence summary of what this axis examines."
+        "Description": "One or two sentence summary of what this topic covers."
+      },
+      {
+        "name": "Strategies",
+        "datatype": "string",
+        "type": "relationship",
+        "nullable": true,
+        "RelatedTo": "Strategies",
+        "Description": "Strategies (specific approaches) explored within this topic."
+      },
+      {
+        "name": "CountOfStrategies",
+        "datatype": "integer",
+        "type": "aggregation",
+        "nullable": true,
+        "Description": "Total number of strategies recorded under this topic.",
+        "formula": "=COUNTIFS(Strategies!{{Topic}}, Topics!{{TopicId}})"
+      }
+    ]
+  },
+  "Criteria": {
+    "Description": "Table: Criteria. A shared grading dimension used to score every strategy across every topic on the same scale (1-5), so strategies can be directly compared even when they come from very different domains -- e.g. comparing an education strategy against a regulation strategy on \u0027Cost\u0027.",
+    "schema": [
+      {
+        "name": "CriterionId",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false,
+        "Description": "Stored identifier for the criterion. Slug form, e.g. \u0027cost\u0027."
+      },
+      {
+        "name": "Name",
+        "datatype": "string",
+        "type": "calculated",
+        "nullable": false,
+        "Description": "Display alias for the criterion.",
+        "formula": "={{CriterionId}}"
+      },
+      {
+        "name": "Title",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false,
+        "Description": "Short human-readable title of the criterion, e.g. \u0027Cost \u0026 Resource Burden\u0027."
+      },
+      {
+        "name": "Icon",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "A single emoji representing this criterion, used as a visual anchor in the UI."
+      },
+      {
+        "name": "Description",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "What this criterion measures and how to interpret a high vs. low score."
+      },
+      {
+        "name": "HighScoreMeaning",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Short phrase describing what a score of 5 means for this criterion, e.g. \u0027Low cost, minimal resources needed\u0027."
+      },
+      {
+        "name": "LowScoreMeaning",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Short phrase describing what a score of 1 means for this criterion, e.g. \u0027Very expensive, major resource burden\u0027."
+      },
+      {
+        "name": "SortOrder",
+        "datatype": "integer",
+        "type": "raw",
+        "nullable": true,
+        "Description": "Display order for this criterion relative to other criteria, ascending."
+      },
+      {
+        "name": "Scores",
+        "datatype": "string",
+        "type": "relationship",
+        "nullable": true,
+        "RelatedTo": "StrategyScores",
+        "Description": "Every strategy score recorded against this criterion."
+      },
+      {
+        "name": "CountOfScores",
+        "datatype": "integer",
+        "type": "aggregation",
+        "nullable": true,
+        "Description": "Total number of strategies scored against this criterion.",
+        "formula": "=COUNTIFS(StrategyScores!{{Criterion}}, Criteria!{{CriterionId}})"
+      },
+      {
+        "name": "AverageScore",
+        "datatype": "number",
+        "type": "aggregation",
+        "nullable": true,
+        "Description": "Average score (1-5) across every strategy graded against this criterion, showing how favorably strategies tend to score on this dimension overall.",
+        "formula": "=AVERAGEIFS(StrategyScores!{{Score}}, StrategyScores!{{Criterion}}, Criteria!{{CriterionId}})"
+      }
+    ]
+  },
+  "Strategies": {
+    "Description": "Table: Strategies. A distinct approach for handling AI within a topic -- e.g. \u0027Essay Writing vs. AI-Assisted Exploration\u0027 or \u0027Licensing \u0026 Mandatory Audits\u0027. New strategies can be added freely as a topic\u0027s scope grows.",
+    "schema": [
+      {
+        "name": "StrategyId",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false,
+        "Description": "Stored identifier for the strategy. Slug form, e.g. \u0027essay-vs-ai-conversation\u0027."
+      },
+      {
+        "name": "Name",
+        "datatype": "string",
+        "type": "calculated",
+        "nullable": false,
+        "Description": "Display alias for the strategy.",
+        "formula": "={{StrategyId}}"
+      },
+      {
+        "name": "Topic",
+        "datatype": "string",
+        "type": "relationship",
+        "nullable": false,
+        "RelatedTo": "Topics",
+        "Description": "The topic this strategy belongs to."
+      },
+      {
+        "name": "TopicTitle",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "Description": "Title of the parent topic.",
+        "formula": "=INDEX(Topics!{{Title}}, MATCH({{Topic}}, Topics!{{TopicId}}, 0))"
+      },
+      {
+        "name": "TopicIcon",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "Description": "Icon of the parent topic.",
+        "formula": "=INDEX(Topics!{{Icon}}, MATCH({{Topic}}, Topics!{{TopicId}}, 0))"
+      },
+      {
+        "name": "Title",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false,
+        "Description": "Short human-readable title of the strategy, e.g. \u0027Essay Writing vs. AI-Assisted Exploration\u0027."
+      },
+      {
+        "name": "Summary",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "One or two sentence summary of what this strategy examines."
       },
       {
         "name": "Scenarios",
@@ -37,7 +204,7 @@
         "type": "relationship",
         "nullable": true,
         "RelatedTo": "Scenarios",
-        "Description": "Example scenarios that illustrate this axis in practice."
+        "Description": "Example scenarios that illustrate this strategy in practice."
       },
       {
         "name": "Considerations",
@@ -45,36 +212,52 @@
         "type": "relationship",
         "nullable": true,
         "RelatedTo": "Considerations",
-        "Description": "Individual pros and cons recorded against this axis."
+        "Description": "Individual pros and cons recorded against this strategy."
+      },
+      {
+        "name": "Scores",
+        "datatype": "string",
+        "type": "relationship",
+        "nullable": true,
+        "RelatedTo": "StrategyScores",
+        "Description": "Scores recorded for this strategy against each shared criterion."
       },
       {
         "name": "CountOfConsiderations",
         "datatype": "integer",
         "type": "aggregation",
         "nullable": true,
-        "Description": "Total number of pros and cons recorded for this axis.",
-        "formula": "=COUNTIFS(Considerations!{{Axis}}, Axes!{{AxisId}})"
+        "Description": "Total number of pros and cons recorded for this strategy.",
+        "formula": "=COUNTIFS(Considerations!{{Strategy}}, Strategies!{{StrategyId}})"
       },
       {
         "name": "CountOfPros",
         "datatype": "integer",
         "type": "aggregation",
         "nullable": true,
-        "Description": "Number of pro considerations recorded for this axis.",
-        "formula": "=COUNTIFS(Considerations!{{Axis}}, Axes!{{AxisId}}, Considerations!{{IsPro}}, TRUE())"
+        "Description": "Number of pro considerations recorded for this strategy.",
+        "formula": "=COUNTIFS(Considerations!{{Strategy}}, Strategies!{{StrategyId}}, Considerations!{{IsPro}}, TRUE())"
       },
       {
         "name": "CountOfCons",
         "datatype": "integer",
         "type": "aggregation",
         "nullable": true,
-        "Description": "Number of con considerations recorded for this axis.",
-        "formula": "=COUNTIFS(Considerations!{{Axis}}, Axes!{{AxisId}}, Considerations!{{IsPro}}, FALSE())"
+        "Description": "Number of con considerations recorded for this strategy.",
+        "formula": "=COUNTIFS(Considerations!{{Strategy}}, Strategies!{{StrategyId}}, Considerations!{{IsPro}}, FALSE())"
+      },
+      {
+        "name": "AverageScore",
+        "datatype": "number",
+        "type": "aggregation",
+        "nullable": true,
+        "Description": "Average score (1-5) across all criteria this strategy has been graded on -- the single-number summary stat for cross-strategy comparison.",
+        "formula": "=AVERAGEIFS(StrategyScores!{{Score}}, StrategyScores!{{Strategy}}, Strategies!{{StrategyId}})"
       }
     ]
   },
   "Scenarios": {
-    "Description": "Table: Scenarios. A concrete example that illustrates how an axis plays out in practice, such as a specific classroom assignment.",
+    "Description": "Table: Scenarios. A concrete example that illustrates how a strategy plays out in practice.",
     "schema": [
       {
         "name": "ScenarioId",
@@ -92,20 +275,20 @@
         "formula": "={{ScenarioId}}"
       },
       {
-        "name": "Axis",
+        "name": "Strategy",
         "datatype": "string",
         "type": "relationship",
         "nullable": false,
-        "RelatedTo": "Axes",
-        "Description": "The axis this scenario illustrates."
+        "RelatedTo": "Strategies",
+        "Description": "The strategy this scenario illustrates."
       },
       {
-        "name": "AxisTitle",
+        "name": "StrategyTitle",
         "datatype": "string",
         "type": "lookup",
         "nullable": true,
-        "Description": "Title of the parent axis.",
-        "formula": "=INDEX(Axes!{{Title}}, MATCH({{Axis}}, Axes!{{AxisId}}, 0))"
+        "Description": "Title of the parent strategy.",
+        "formula": "=INDEX(Strategies!{{Title}}, MATCH({{Strategy}}, Strategies!{{StrategyId}}, 0))"
       },
       {
         "name": "Title",
@@ -124,7 +307,7 @@
     ]
   },
   "Considerations": {
-    "Description": "Table: Considerations. A single pro or con recorded against an axis.",
+    "Description": "Table: Considerations. A single pro or con recorded against a strategy, optionally tied to the shared Criterion it provides evidence for.",
     "schema": [
       {
         "name": "ConsiderationId",
@@ -142,20 +325,36 @@
         "formula": "={{ConsiderationId}}"
       },
       {
-        "name": "Axis",
+        "name": "Strategy",
         "datatype": "string",
         "type": "relationship",
         "nullable": false,
-        "RelatedTo": "Axes",
-        "Description": "The axis this consideration belongs to."
+        "RelatedTo": "Strategies",
+        "Description": "The strategy this consideration belongs to."
       },
       {
-        "name": "AxisTitle",
+        "name": "StrategyTitle",
         "datatype": "string",
         "type": "lookup",
         "nullable": true,
-        "Description": "Title of the parent axis.",
-        "formula": "=INDEX(Axes!{{Title}}, MATCH({{Axis}}, Axes!{{AxisId}}, 0))"
+        "Description": "Title of the parent strategy.",
+        "formula": "=INDEX(Strategies!{{Title}}, MATCH({{Strategy}}, Strategies!{{StrategyId}}, 0))"
+      },
+      {
+        "name": "Criterion",
+        "datatype": "string",
+        "type": "relationship",
+        "nullable": true,
+        "RelatedTo": "Criteria",
+        "Description": "The shared criterion this pro or con is evidence for, if any."
+      },
+      {
+        "name": "CriterionTitle",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "Description": "Title of the related criterion.",
+        "formula": "=INDEX(Criteria!{{Title}}, MATCH({{Criterion}}, Criteria!{{CriterionId}}, 0))"
       },
       {
         "name": "IsPro",
@@ -178,6 +377,80 @@
         "nullable": true,
         "Description": "Human-readable label for whether this is a pro or a con.",
         "formula": "=IF({{IsPro}}, \u0022Pro\u0022, \u0022Con\u0022)"
+      }
+    ]
+  },
+  "StrategyScores": {
+    "Description": "Table: StrategyScores. A single numeric score (1-5) recording how a strategy performs against one shared criterion, with a short rationale. This is the join table that makes strategies comparable on the same stats across topics -- e.g. comparing an education strategy\u0027s Cost score directly against a regulation strategy\u0027s Cost score.",
+    "schema": [
+      {
+        "name": "ScoreId",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false,
+        "Description": "Stored identifier for the score. Slug form, e.g. \u0027ai-proctored-open-exams__cost\u0027."
+      },
+      {
+        "name": "Name",
+        "datatype": "string",
+        "type": "calculated",
+        "nullable": false,
+        "Description": "Display alias for the score.",
+        "formula": "={{ScoreId}}"
+      },
+      {
+        "name": "Strategy",
+        "datatype": "string",
+        "type": "relationship",
+        "nullable": false,
+        "RelatedTo": "Strategies",
+        "Description": "The strategy being scored."
+      },
+      {
+        "name": "StrategyTitle",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "Description": "Title of the scored strategy.",
+        "formula": "=INDEX(Strategies!{{Title}}, MATCH({{Strategy}}, Strategies!{{StrategyId}}, 0))"
+      },
+      {
+        "name": "Criterion",
+        "datatype": "string",
+        "type": "relationship",
+        "nullable": false,
+        "RelatedTo": "Criteria",
+        "Description": "The shared criterion being scored against."
+      },
+      {
+        "name": "CriterionTitle",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "Description": "Title of the criterion.",
+        "formula": "=INDEX(Criteria!{{Title}}, MATCH({{Criterion}}, Criteria!{{CriterionId}}, 0))"
+      },
+      {
+        "name": "CriterionIcon",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "Description": "Icon of the criterion.",
+        "formula": "=INDEX(Criteria!{{Icon}}, MATCH({{Criterion}}, Criteria!{{CriterionId}}, 0))"
+      },
+      {
+        "name": "Score",
+        "datatype": "integer",
+        "type": "raw",
+        "nullable": false,
+        "Description": "Score from 1 (very unfavorable on this criterion) to 5 (very favorable)."
+      },
+      {
+        "name": "Rationale",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "One-sentence rationale for why this strategy earned this score on this criterion."
       }
     ]
   }

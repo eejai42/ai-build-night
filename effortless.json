@@ -18,7 +18,9 @@
       "RelativePath": "/effortless-rulebook",
       "CommandLine": "minimize-rulebook -i effortless-rulebook.json",
       "IsDisabled": false,
-      "PinnedVersion": "v2026.07.08.1133"
+      "PinnedVersion": "v2026.07.08.1133",
+      "LastVersionUsed": "v2026.07.08.1133",
+      "LastUrl": "https://effortless-minimize-rulebook-v2026-07-08-1133-cmvbd4phczmeg.7pktzg2z971j0.cpln.app"
     },
     {
       "IsSSoTTranspiler": false,
@@ -26,7 +28,9 @@
       "RelativePath": "/effortless-rulebook",
       "CommandLine": "effortless-rulebook-editor -i effortless-rulebook.json -p rulebookPath=effortless-rulebook.json -p dockerfilePath=docker/Dockerfile",
       "IsDisabled": false,
-      "PinnedVersion": "v2026.08.11.2344"
+      "PinnedVersion": "v2026.08.11.2344",
+      "LastVersionUsed": "v2026.08.11.2344",
+      "LastUrl": "https://effortless-effortless-rulebook-e-v2026-08-11-2344-cmvbd4phczmeg.7pktzg2z971j0.cpln.app"
     }
   ]
 }

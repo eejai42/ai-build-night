@@ -1,3 +1,6 @@
-Axes: AxisId, Name, Title, Summary, Scenarios, Considerations, CountOfConsiderations, CountOfPros, CountOfCons
-Scenarios: ScenarioId, Name, Axis, AxisTitle, Title, Description
-Considerations: ConsiderationId, Name, Axis, AxisTitle, IsPro, Statement, Kind
+Topics: TopicId, Name, Title, Icon, Summary, Strategies, CountOfStrategies
+Criteria: CriterionId, Name, Title, Icon, Description, HighScoreMeaning, LowScoreMeaning, SortOrder, Scores, CountOfScores, AverageScore
+Strategies: StrategyId, Name, Topic, TopicTitle, TopicIcon, Title, Summary, Scenarios, Considerations, Scores, CountOfConsiderations, CountOfPros, CountOfCons, AverageScore
+Scenarios: ScenarioId, Name, Strategy, StrategyTitle, Title, Description
+Considerations: ConsiderationId, Name, Strategy, StrategyTitle, Criterion, CriterionTitle, IsPro, Statement, Kind
+StrategyScores: ScoreId, Name, Strategy, StrategyTitle, Criterion, CriterionTitle, CriterionIcon, Score, Rationale
