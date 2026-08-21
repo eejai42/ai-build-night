@@ -89,55 +89,73 @@
       "StrategyId": "essay-vs-ai-conversation",
       "Topic": "ai-in-education",
       "Title": "Essay Writing vs. AI-Assisted Exploration",
-      "Summary": "Instead of assigning a written essay, the assignment becomes an exploratory conversation with an LLM, submitted as a shareable conversation link rather than a document."
+      "Summary": "Instead of assigning a written essay, the assignment becomes an exploratory conversation with an LLM, submitted as a shareable conversation link rather than a document.",
+      "Verdict": "This strategy trades the illusion of standardized assessment for a faster, more auditable signal of live thinking -- but it quietly re-weights grades toward students who already know how to interrogate a system, a skill correlated with prior privilege, not raw understanding. It works well as a formative tool where the transcript itself is graded, not as a summative replacement for essays unless prompting literacy is explicitly taught first. Avoid it as a drop-in essay substitute in any classroom where AI access or fluency varies widely among students.",
+      "RecommendedFor": "Classrooms that pair it with explicit prompting instruction"
     },
     {
       "StrategyId": "ai-proctored-open-exams",
       "Topic": "ai-in-education",
       "Title": "AI-Proctored Open-Book Exams",
-      "Summary": "Exams assume AI access is allowed and expected, shifting the graded skill from recall to judgment, synthesis, and interrogating an AI\u0027s output rather than just receiving it."
+      "Summary": "Exams assume AI access is allowed and expected, shifting the graded skill from recall to judgment, synthesis, and interrogating an AI\u0027s output rather than just receiving it.",
+      "Verdict": "This is the intellectually honest response to ubiquitous AI -- testing judgment instead of pretending recall still matters -- but it only works if someone has the time and skill to author questions AI can\u0027t trivially solve, which is exactly the scarce resource most schools lack. It rewards well-funded institutions that can invest in question design while punishing under-resourced ones with watered-down exams or expensive proctoring infrastructure. Don\u0027t adopt this without committing real budget and faculty time to the harder authoring problem it creates.",
+      "RecommendedFor": "Well-funded institutions willing to invest in gameable-resistant question design"
     },
     {
       "StrategyId": "ai-as-teaching-assistant",
       "Topic": "ai-in-education",
       "Title": "AI as a Teaching Assistant",
-      "Summary": "AI handles high-volume, low-stakes work -- first-pass feedback, practice-problem tutoring -- while the teacher is freed up for judgment calls and relationship-building."
+      "Summary": "AI handles high-volume, low-stakes work -- first-pass feedback, practice-problem tutoring -- while the teacher is freed up for judgment calls and relationship-building.",
+      "Verdict": "This is the easiest strategy to deploy and the easiest to quietly undermine -- AI tutoring genuinely helps struggling students get first-pass feedback fast, but the same channel lets students launder finished answers as \u0027help received,\u0027 and most implementations can\u0027t tell the difference. It\u0027s a reasonable default for scaling feedback in large or under-staffed courses, but it needs a human-graded checkpoint downstream to catch laundering, not blind trust in the AI-tutoring log. Skip it for high-stakes work where the line between tutoring and doing-it-for-you can\u0027t be enforced.",
+      "RecommendedFor": "Large or understaffed courses needing scalable first-pass feedback"
     },
     {
       "StrategyId": "full-ai-ban-analog-assessment",
       "Topic": "ai-in-education",
       "Title": "Full AI Ban \u002B Analog Assessment",
-      "Summary": "All take-home written work is removed from the grade; assessment shifts to in-class handwritten work and oral defenses where AI use is physically impossible to insert undetected."
+      "Summary": "All take-home written work is removed from the grade; assessment shifts to in-class handwritten work and oral defenses where AI use is physically impossible to insert undetected.",
+      "Verdict": "This is the strategy for institutions that have decided misuse risk is non-negotiable and are willing to pay for it in cost, equity, and speed -- oral defenses and in-class work are nearly impossible to launder through AI, but they don\u0027t scale and favor students with strong verbal/in-person performance skills. It\u0027s the right call for small, high-stakes, integrity-critical contexts (bar exams, licensure, thesis defenses), and the wrong call anywhere that needs to serve large numbers of students affordably. Don\u0027t reach for this as a general-purpose policy -- it\u0027s a specialty tool, not a default.",
+      "RecommendedFor": "Small, high-stakes, integrity-critical settings (licensure, thesis defense)"
     },
     {
       "StrategyId": "ai-literacy-core-curriculum",
       "Topic": "ai-in-education",
       "Title": "AI Literacy as Core Curriculum",
-      "Summary": "Schools teach AI directly as an explicit subject -- prompting, spotting hallucinations and bias, and critically evaluating AI output -- with the same seriousness as media literacy or statistics."
+      "Summary": "Schools teach AI directly as an explicit subject -- prompting, spotting hallucinations and bias, and critically evaluating AI output -- with the same seriousness as media literacy or statistics.",
+      "Verdict": "This is the only strategy on the list that treats the problem as a skills gap to close rather than a behavior to police, and it pays off in equity over time -- but \u0027over time\u0027 is the catch: it requires a multi-year curriculum investment most districts can\u0027t front-load, and the curriculum itself risks going stale as fast as the models it teaches about. It\u0027s the right long-horizon bet for institutions that can absorb slow payoff and commit to iterating the curriculum yearly, not a fix for anyone needing results this semester. Pair it with a faster-acting policy to bridge the gap while it matures.",
+      "RecommendedFor": "Institutions with multi-year horizons and curriculum-refresh capacity"
     },
     {
       "StrategyId": "light-touch-disclosure",
       "Topic": "ai-regulation",
       "Title": "Light-Touch Disclosure Requirements",
-      "Summary": "Regulation mandates clear labeling of AI-generated content and AI-driven interactions, but otherwise imposes minimal restriction on what AI systems can do."
+      "Summary": "Regulation mandates clear labeling of AI-generated content and AI-driven interactions, but otherwise imposes minimal restriction on what AI systems can do.",
+      "Verdict": "This is the regulatory equivalent of a smoke detector, not a sprinkler system -- it\u0027s nearly free to implement, fast to pass, and easy to repeal if it doesn\u0027t work, but disclosure alone does nothing to stop an actor who doesn\u0027t care about compliance, which is precisely the actor most likely to cause serious harm. It\u0027s the correct first move when speed and political feasibility matter more than closing every gap, or as a placeholder while heavier regulation is designed. It is not a substitute for enforcement teeth wherever the risk profile includes bad-faith actors.",
+      "RecommendedFor": "Regulators prioritizing speed and reversibility over enforcement teeth"
     },
     {
       "StrategyId": "licensing-and-audits",
       "Topic": "ai-regulation",
       "Title": "Licensing \u0026 Mandatory Audits",
-      "Summary": "AI systems above a defined capability or deployment-scale threshold must obtain a license and submit to periodic independent audits, similar to aviation or banking regulation."
+      "Summary": "AI systems above a defined capability or deployment-scale threshold must obtain a license and submit to periodic independent audits, similar to aviation or banking regulation.",
+      "Verdict": "This buys real soundness and auditability -- the kind that survives a subpoena -- at a cost that is brutal on every practical dimension: slow to stand up, expensive to run, and nearly impossible to unwind once the bureaucracy exists, even if it turns out to be the wrong call. It only makes sense for systems whose failure modes are catastrophic or irreversible enough that the up-front cost and lock-in risk are worth it. Applying it broadly to lower-risk AI systems is a governance overreach that will calcify without commensurate benefit.",
+      "RecommendedFor": "High-stakes/frontier systems where failure is catastrophic or irreversible"
     },
     {
       "StrategyId": "rate-limiting-throttling",
       "Topic": "ai-safety-cooling",
       "Title": "Rate-Limiting \u0026 Throttling",
-      "Summary": "Technical circuit breakers cap the volume or capability of requests a user or system can make, slowing runaway automation or abusive use before it scales to catastrophic size."
+      "Summary": "Technical circuit breakers cap the volume or capability of requests a user or system can make, slowing runaway automation or abusive use before it scales to catastrophic size.",
+      "Verdict": "This is the reversible, cheap, fast-to-deploy safety valve -- exactly the strategy you want when you need something in place today and might need to change it tomorrow -- but it\u0027s a speed bump, not a wall: a patient or well-resourced adversary can route around volume caps with time, multiple accounts, or distributed access. It\u0027s the right default first layer for any deployment, especially ones still learning their actual risk profile, but it should never be the only control for a genuinely high-severity misuse scenario. Treat it as buying time for better controls, not as the control itself.",
+      "RecommendedFor": "First-layer defense while better controls are still being built"
     },
     {
       "StrategyId": "staged-capability-release",
       "Topic": "ai-safety-cooling",
       "Title": "Staged Capability Release",
-      "Summary": "New AI capabilities roll out gradually -- first to a small monitored cohort, then progressively wider -- with explicit monitoring gates before advancing to the next stage."
+      "Summary": "New AI capabilities roll out gradually -- first to a small monitored cohort, then progressively wider -- with explicit monitoring gates before advancing to the next stage.",
+      "Verdict": "This strategy borrows real, validated logic from clinical trials -- expose a capability to a narrow, monitored cohort before wide release -- and it\u0027s the strongest option here on soundness precisely because it generates evidence before committing to scale. Its blind spot is who gets to be in the early cohort: access inevitably skews toward already-advantaged users, and running staged gates well costs real money and coordination. Use it when you\u0027re genuinely uncertain about a capability\u0027s failure modes and can afford deliberate rollout; skip it when equitable simultaneous access matters more than staged evidence-gathering.",
+      "RecommendedFor": "Novel capabilities with uncertain failure modes and resources for staged monitoring"
     }
   ],
   "Scenarios": [
@@ -194,6 +212,60 @@
       "Strategy": "staged-capability-release",
       "Title": "The Agentic-Browsing Rollout",
       "Description": "A model developer builds a capability letting the AI autonomously browse and complete web forms, releasing it first to 500 opted-in beta testers with full action logging. After two weeks with no incidents it expands to 5% of paid users; a spike in form submissions on financial sites triggers an automatic pause until the team ships a guardrail restricting autonomous submission on finance-classified domains."
+    },
+    {
+      "ScenarioId": "grad-seminar-rewrite-sprint",
+      "Strategy": "essay-vs-ai-conversation",
+      "Title": "The Grad Seminar Rewrite Sprint",
+      "Description": "In a graduate public-policy seminar, students submit a first-draft memo, then spend a live 45-minute session prompting an AI to challenge their argument\u0027s weakest assumptions before revising. The professor grades only the revision plus a one-page log of which AI pushback the student accepted or rejected. A student who blindly accepted a fabricated statistic gets marked down specifically for that lapse, turning the log into the real assessment."
+    },
+    {
+      "ScenarioId": "capstone-systems-design-exam",
+      "Strategy": "ai-proctored-open-exams",
+      "Title": "The Capstone Systems-Design Exam",
+      "Description": "A university computer engineering program runs its senior capstone exam with an AI proctor that allows full internet and AI-tool access but flags any window where a student\u0027s design rationale in their notes doesn\u0027t match the design decisions in their code. Of 60 students, 4 are flagged for review; two are cleared after showing their iterative prompt history, two are found to have pasted an unexplained AI-generated architecture wholesale."
+    },
+    {
+      "ScenarioId": "onboarding-ramp-up-bot",
+      "Strategy": "ai-as-teaching-assistant",
+      "Title": "The Onboarding Ramp-Up Bot",
+      "Description": "A 400-person logistics company rolls out an AI TA embedded in its new-hire onboarding portal, answering procedural questions and quizzing trainees on safety protocols before their first warehouse shift. Time-to-independent-work drops from 11 days to 7, but one new hire who relied solely on the bot\u0027s simplified safety summary skips a step a human trainer would have caught in person, prompting a required human-led shadow shift regardless of quiz scores."
+    },
+    {
+      "ScenarioId": "closed-book-bar-exam-module",
+      "Strategy": "full-ai-ban-analog-assessment",
+      "Title": "The Closed-Book Bar Exam Module",
+      "Description": "A state bar association reinstates a fully closed-book, pen-and-paper module for its legal ethics section after discovering AI-generated practice answers had started circulating with subtly incorrect case citations that examinees were memorizing verbatim. Candidates now handwrite issue-spotting essays in a sealed room with only a printed rules excerpt, and pass rates dip 6% in the first sitting."
+    },
+    {
+      "ScenarioId": "bank-reskilling-cohort",
+      "Strategy": "ai-literacy-core-curriculum",
+      "Title": "The Reskilling Cohort at a Regional Bank",
+      "Description": "A regional bank enrolls 200 back-office employees in a mandatory six-week AI Literacy track before rolling out an AI-assisted loan-processing tool, covering how the model can be wrong and when to escalate to a human underwriter. Employees who complete the track catch 30% more model errors in their first month of live use than a pilot group that skipped training, so the bank makes the course a prerequisite rather than a one-time webinar."
+    },
+    {
+      "ScenarioId": "eu-medical-chatbot-labeling-rule",
+      "Strategy": "light-touch-disclosure",
+      "Title": "The EU Medical-Chatbot Labeling Rule",
+      "Description": "Under a new EU member-state health-tech rule, any AI symptom-checker deployed by a clinic must display a persistent on-screen label stating it is not a licensed medical provider and disclose its last clinical-validation date. A national telehealth platform serving 2 million patients complies by adding a banner and footer, with no restriction on the tool\u0027s actual medical claims -- and the rule catches zero cases of harmful advice, only formatting compliance."
+    },
+    {
+      "ScenarioId": "credit-scoring-certification-board",
+      "Strategy": "licensing-and-audits",
+      "Title": "The Credit-Scoring Model Certification Board",
+      "Description": "A national financial regulator requires any bank deploying an AI credit-scoring model above a certain loan volume to pass an annual third-party audit checking for disparate impact, with results filed publicly. A mid-size lender\u0027s model passes on aggregate metrics but the audit flags an untested subgroup interaction, triggering a mandatory 90-day remediation before the license renews; two smaller fintech lenders exit the market rather than pay the audit cost."
+    },
+    {
+      "ScenarioId": "customer-service-bot-ticket-storm",
+      "Strategy": "rate-limiting-throttling",
+      "Title": "The Customer-Service Bot Ticket Storm",
+      "Description": "A telecom\u0027s AI customer-service agent gets stuck in a loop issuing duplicate refund confirmations after a downstream API starts timing out, generating 14,000 ticket updates in nine minutes before a per-conversation rate limit caps it at 20 actions per hour and forces human handoff. The throttle prevents a reconciliation nightmare but also stalls 300 legitimate refund requests mid-flight, requiring a manual sweep the next morning."
+    },
+    {
+      "ScenarioId": "voice-cloning-feature-rollout",
+      "Strategy": "staged-capability-release",
+      "Title": "The Voice-Cloning Feature Rollout",
+      "Description": "An AI platform rolls out real-time voice cloning in four stages: internal red-teamers, then 500 opted-in beta users with mandatory watermarking, then verified enterprise customers with usage logging, and only then the general public with a consent-recording requirement. During the enterprise stage, a dubbing studio\u0027s workflow surfaces a watermark-stripping bug that would have gone unnoticed at consumer scale, delaying general release by five weeks."
     }
   ],
   "Considerations": [
@@ -448,6 +520,132 @@
       "Criterion": "equity",
       "IsPro": false,
       "Statement": "Early access cohorts are frequently drawn from paying, technically sophisticated, or geographically concentrated users, so benefits accrue disproportionately to an already-advantaged group first."
+    },
+    {
+      "ConsiderationId": "no-drafting-infrastructure-needed",
+      "Strategy": "essay-vs-ai-conversation",
+      "Criterion": "implementation-speed",
+      "IsPro": true,
+      "Statement": "A teacher can adopt this by simply changing the assignment prompt and a submission link field, requiring no new grading rubric, software procurement, or training cycle."
+    },
+    {
+      "ConsiderationId": "transcript-length-enables-hidden-outsourcing",
+      "Strategy": "essay-vs-ai-conversation",
+      "Criterion": "misuse-risk",
+      "IsPro": false,
+      "Statement": "A student can have a second person or a separate AI session draft the actual exploratory questions and simply paste them in, and a transcript alone cannot distinguish genuine curiosity from relayed prompts."
+    },
+    {
+      "ConsiderationId": "per-seat-logging-license-costs",
+      "Strategy": "ai-proctored-open-exams",
+      "Criterion": "cost",
+      "IsPro": false,
+      "Statement": "Sanctioned mid-test AI access requires either an institutional API contract or a locked-down proctoring platform with logging, and per-seat costs scale directly with enrollment."
+    },
+    {
+      "ConsiderationId": "full-interaction-log-supports-post-hoc-review",
+      "Strategy": "ai-proctored-open-exams",
+      "Criterion": "auditability",
+      "IsPro": true,
+      "Statement": "Because every prompt and AI response during the exam is captured by design, a disputed grade can be reconstructed and reviewed from the transcript rather than relying on memory."
+    },
+    {
+      "ConsiderationId": "first-pass-feedback-deployable-within-a-term",
+      "Strategy": "ai-as-teaching-assistant",
+      "Criterion": "implementation-speed",
+      "IsPro": true,
+      "Statement": "Because the AI only augments existing grading workflows rather than replacing the assessment format itself, a teacher can phase it in for a single assignment within days and expand as trust builds."
+    },
+    {
+      "ConsiderationId": "students-can-launder-ai-answers-through-tutoring-sessions",
+      "Strategy": "ai-as-teaching-assistant",
+      "Criterion": "misuse-risk",
+      "IsPro": false,
+      "Statement": "A \u0027tutoring\u0027 interface is functionally indistinguishable from an answer-generation interface once a student rephrases the assignment as a question, so it can become a covert answer engine."
+    },
+    {
+      "ConsiderationId": "oral-defense-scheduling-strains-classroom-time",
+      "Strategy": "full-ai-ban-analog-assessment",
+      "Criterion": "implementation-speed",
+      "IsPro": false,
+      "Statement": "Individual oral defenses for every student multiply the time an instructor must spend per assessment cycle by class size, straining courses with large enrollments or limited class periods."
+    },
+    {
+      "ConsiderationId": "in-person-format-eliminates-remote-impersonation",
+      "Strategy": "full-ai-ban-analog-assessment",
+      "Criterion": "auditability",
+      "IsPro": true,
+      "Statement": "Because the work is produced and defended live in front of the instructor, there is no submitted artifact whose authorship must be inferred after the fact."
+    },
+    {
+      "ConsiderationId": "new-subject-requires-dedicated-curriculum-budget",
+      "Strategy": "ai-literacy-core-curriculum",
+      "Criterion": "cost",
+      "IsPro": false,
+      "Statement": "Standing up AI literacy as its own subject requires curriculum development, teacher retraining, and often new instructional time carved out of an already-full school day."
+    },
+    {
+      "ConsiderationId": "curriculum-access-gaps-mirror-existing-digital-divide",
+      "Strategy": "ai-literacy-core-curriculum",
+      "Criterion": "equity",
+      "IsPro": false,
+      "Statement": "Schools with fewer resources are least able to fund a new curriculum strand and specialized teacher training, so the districts that most need this instruction are least likely to get it first."
+    },
+    {
+      "ConsiderationId": "label-only-mandate-has-near-zero-marginal-cost",
+      "Strategy": "light-touch-disclosure",
+      "Criterion": "cost",
+      "IsPro": true,
+      "Statement": "Because compliance only requires adding a label or disclosure statement rather than building new technical infrastructure, the mandate can be enforced by existing staff without a new budget line."
+    },
+    {
+      "ConsiderationId": "self-reported-labels-are-unverifiable-after-the-fact",
+      "Strategy": "light-touch-disclosure",
+      "Criterion": "auditability",
+      "IsPro": false,
+      "Statement": "Because disclosure relies on the originator\u0027s own attestation with no independent verification mechanism, there is no reliable way to audit after the fact whether content was accurately labeled when published."
+    },
+    {
+      "ConsiderationId": "audit-fees-favor-incumbents-over-new-entrants",
+      "Strategy": "licensing-and-audits",
+      "Criterion": "cost",
+      "IsPro": false,
+      "Statement": "Licensing and recurring independent audit fees represent a fixed cost that large incumbents can absorb far more easily than startups, risking entrenchment of existing market leaders under the banner of safety."
+    },
+    {
+      "ConsiderationId": "licensing-approval-cycles-delay-deployment",
+      "Strategy": "licensing-and-audits",
+      "Criterion": "implementation-speed",
+      "IsPro": false,
+      "Statement": "Standing up a licensing authority takes years to build institutional capacity, and once operational, each new system or major update must clear an approval cycle before shipping."
+    },
+    {
+      "ConsiderationId": "throttling-logic-reuses-existing-infra-metering",
+      "Strategy": "rate-limiting-throttling",
+      "Criterion": "implementation-speed",
+      "IsPro": true,
+      "Statement": "Because rate limits build on request-metering infrastructure most platforms already operate for billing and abuse prevention, they can typically be deployed via configuration rather than new systems."
+    },
+    {
+      "ConsiderationId": "limits-are-trivially-circumvented-with-multiple-accounts",
+      "Strategy": "rate-limiting-throttling",
+      "Criterion": "reversibility",
+      "IsPro": false,
+      "Statement": "A determined user can defeat per-account or per-session caps by creating additional accounts or sessions, so the control degrades for casual users but offers little durable protection against a motivated bad actor."
+    },
+    {
+      "ConsiderationId": "parallel-monitoring-across-cohorts-adds-operational-overhead",
+      "Strategy": "staged-capability-release",
+      "Criterion": "cost",
+      "IsPro": false,
+      "Statement": "Running staged rollouts well requires standing up monitoring, incident response, and rollback tooling for each cohort simultaneously, a heavier ongoing burden than a single simultaneous release."
+    },
+    {
+      "ConsiderationId": "narrow-cohort-gate-limits-blast-radius-of-reversal",
+      "Strategy": "staged-capability-release",
+      "Criterion": "reversibility",
+      "IsPro": true,
+      "Statement": "Because only a limited cohort has access at each stage, a discovered flaw can be contained and the release halted before it reaches the general population, making rollback far less costly than undoing a full public launch."
     }
   ],
   "StrategyScores": [
