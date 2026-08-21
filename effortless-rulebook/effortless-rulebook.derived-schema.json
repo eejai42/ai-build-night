@@ -213,6 +213,20 @@
         "Description": "Short phrase naming the specific context or actor this strategy is best suited for."
       },
       {
+        "name": "MaturityLevel",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "How proven this strategy is in real-world practice today: \u0027Experimental\u0027, \u0027Emerging\u0027, or \u0027Proven\u0027."
+      },
+      {
+        "name": "PrimaryTag",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "Description": "A single short filterable label for this strategy\u0027s core mechanism, e.g. \u0027Assessment Redesign\u0027, \u0027Technical Control\u0027, \u0027Curriculum\u0027."
+      },
+      {
         "name": "Scenarios",
         "datatype": "string",
         "type": "relationship",

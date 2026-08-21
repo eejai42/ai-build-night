@@ -546,8 +546,24 @@ export default function App() {
               </Text>
             </Pressable>
 
-            <Text style={styles.h1}>{strategy?.title ?? view.strategyId}</Text>
+            <View style={styles.headerRow}>
+              <Text style={styles.h1}>{strategy?.title ?? view.strategyId}</Text>
+              {strategy?.average_score ? <ScoreBadge score={Number(strategy.average_score)} size="large" /> : null}
+            </View>
             {strategy?.summary ? <Text style={styles.summary}>{strategy.summary}</Text> : null}
+
+            {strategy?.recommended_for ? (
+              <View style={styles.recommendedForChip}>
+                <Text style={styles.recommendedForText}>✅ Best for: {strategy.recommended_for}</Text>
+              </View>
+            ) : null}
+
+            {strategy?.verdict ? (
+              <View style={styles.verdictBox}>
+                <Text style={styles.verdictLabel}>VERDICT</Text>
+                <Text style={styles.verdictText}>{strategy.verdict}</Text>
+              </View>
+            ) : null}
 
             <View style={styles.headerRow}>
               <Text style={styles.h2}>Scores</Text>
@@ -586,8 +602,9 @@ export default function App() {
                 <View style={styles.cardHeaderRow}>
                   <Text style={styles.cardTitle}>
                     {sc.criterion_icon ? `${sc.criterion_icon} ` : ''}
-                    {sc.criterion_title ?? sc.criterion} — {sc.score}/5
+                    {sc.criterion_title ?? sc.criterion}
                   </Text>
+                  <ScoreBadge score={sc.score} />
                   <EditPencil
                     onPress={() =>
                       setEditState({
@@ -817,10 +834,10 @@ export default function App() {
               />
             </View>
             {item.description ? <Text style={styles.cardBody}>{item.description}</Text> : null}
-            <Text style={styles.counts}>
-              {item.count_of_scores} strategies scored
-              {item.average_score ? ` · avg ${Number(item.average_score).toFixed(1)}` : ''}
-            </Text>
+            <View style={styles.cardFooterRow}>
+              <Text style={styles.counts}>{item.count_of_scores} strategies scored</Text>
+              {item.average_score ? <ScoreBadge score={Number(item.average_score)} /> : null}
+            </View>
           </Pressable>
         )}
       />
@@ -856,29 +873,34 @@ export default function App() {
             <Text style={[styles.h2, { marginTop: 20 }]}>Strategies, ranked</Text>
           </View>
         }
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={styles.cardHeaderRow}>
-              <Text style={styles.cardTitle}>
-                {item.strategy_title ?? item.strategy} — {item.score}/5
-              </Text>
-              <EditPencil
-                onPress={() =>
-                  setEditState({
-                    table: 'StrategyScores',
-                    rowId: item.score_id,
-                    fields: [
-                      { key: 'Score', label: 'Score (1-5)', kind: 'score' },
-                      { key: 'Rationale', label: 'Rationale', kind: 'multiline' },
-                    ],
-                    values: { Score: item.score, Rationale: item.rationale ?? '' },
-                  })
-                }
-              />
+        renderItem={({ item, index }) => {
+          const medal = index === 0 ? '🥇 ' : index === 1 ? '🥈 ' : index === 2 ? '🥉 ' : '';
+          return (
+            <View style={styles.card}>
+              <View style={styles.cardHeaderRow}>
+                <Text style={styles.cardTitle}>
+                  {medal}
+                  {item.strategy_title ?? item.strategy}
+                </Text>
+                <ScoreBadge score={item.score} />
+                <EditPencil
+                  onPress={() =>
+                    setEditState({
+                      table: 'StrategyScores',
+                      rowId: item.score_id,
+                      fields: [
+                        { key: 'Score', label: 'Score (1-5)', kind: 'score' },
+                        { key: 'Rationale', label: 'Rationale', kind: 'multiline' },
+                      ],
+                      values: { Score: item.score, Rationale: item.rationale ?? '' },
+                    })
+                  }
+                />
+              </View>
+              {item.rationale ? <Text style={styles.cardBody}>{item.rationale}</Text> : null}
             </View>
-            {item.rationale ? <Text style={styles.cardBody}>{item.rationale}</Text> : null}
-          </View>
-        )}
+          );
+        }}
       />
     );
   }
@@ -964,10 +986,30 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 10,
   },
+  strategyCard: {
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#ececec',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 1,
+  },
   cardHeaderRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
+    gap: 8,
+  },
+  cardFooterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 6,
   },
   proCard: {
     backgroundColor: '#eaf7ec',
@@ -990,6 +1032,83 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontSize: 12,
     color: '#777',
+  },
+  proText: {
+    color: '#2e7d32',
+    fontWeight: '600',
+  },
+  conText: {
+    color: '#c62828',
+    fontWeight: '600',
+  },
+  scoreBadge: {
+    borderRadius: 8,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scoreBadgeLarge: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+  },
+  scoreBadgeText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 13,
+  },
+  scoreBadgeTextLarge: {
+    fontSize: 17,
+  },
+  miniBarsRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 3,
+    height: 30,
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  miniBarWrap: {
+    alignItems: 'flex-end',
+  },
+  miniBar: {
+    width: 6,
+    borderRadius: 3,
+  },
+  verdictBox: {
+    backgroundColor: '#eef2ff',
+    borderRadius: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#3366cc',
+    padding: 12,
+    marginTop: 10,
+    marginBottom: 4,
+  },
+  verdictLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#3366cc',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  verdictText: {
+    fontSize: 14,
+    color: '#333',
+    lineHeight: 20,
+  },
+  recommendedForChip: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#e8f5e9',
+    borderRadius: 8,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginTop: 6,
+  },
+  recommendedForText: {
+    fontSize: 13,
+    color: '#2e7d32',
+    fontWeight: '600',
   },
   pencil: {
     fontSize: 16,
