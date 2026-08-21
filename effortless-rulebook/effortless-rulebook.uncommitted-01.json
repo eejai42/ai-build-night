@@ -1,0 +1,125 @@
+{
+  "createdAt": "2026-08-21T00:25:38.743Z",
+  "changes": [
+    {
+      "type": "add-row",
+      "table": "Topics",
+      "values": {
+        "TopicId": "Xhdbdbx",
+        "Title": "Zxnxbxn",
+        "Summary": ""
+      },
+      "pkFieldName": "TopicId",
+      "pkValue": "Xhdbdbx",
+      "at": "2026-08-21T00:25:38.743Z"
+    },
+    {
+      "type": "add-row",
+      "table": "Strategies",
+      "values": {
+        "StrategyId": "Hdbddnd",
+        "Topic": "Xhdbdbx",
+        "Title": "Bzbzbsb",
+        "Summary": ""
+      },
+      "pkFieldName": "StrategyId",
+      "pkValue": "Hdbddnd",
+      "at": "2026-08-21T00:25:53.507Z"
+    },
+    {
+      "type": "add-row",
+      "table": "Scenarios",
+      "values": {
+        "ScenarioId": "Shaba",
+        "Strategy": "To",
+        "Title": "",
+        "Description": ""
+      },
+      "pkFieldName": "ScenarioId",
+      "pkValue": "Shaba",
+      "at": "2026-08-21T00:26:09.295Z"
+    },
+    {
+      "type": "add-row",
+      "table": "Considerations",
+      "values": {
+        "ConsiderationId": "Fight",
+        "Strategy": "Hdbddnd",
+        "Statement": " Vbfghjj",
+        "IsPro": true
+      },
+      "pkFieldName": "ConsiderationId",
+      "pkValue": "Fight",
+      "at": "2026-08-21T00:26:20.498Z"
+    },
+    {
+      "type": "add-row",
+      "table": "Scenarios",
+      "values": {
+        "ScenarioId": "Ghhh",
+        "Strategy": "Hdbddnd",
+        "Title": "CB bbbfgbb",
+        "Description": ""
+      },
+      "pkFieldName": "ScenarioId",
+      "pkValue": "Ghhh",
+      "at": "2026-08-21T00:26:29.802Z"
+    },
+    {
+      "type": "row-edit",
+      "table": "Considerations",
+      "rowId": "Fight",
+      "fields": {
+        "Statement": "dsfsfdsfdsfd"
+      },
+      "priorFields": {
+        "Statement": " Vbfghjj"
+      },
+      "pkFieldName": "ConsiderationId",
+      "pkValue": "Fight",
+      "at": "2026-08-21T00:27:06.387Z"
+    },
+    {
+      "type": "row-edit",
+      "table": "Strategies",
+      "rowId": "Hdbddnd",
+      "fields": {
+        "Title": "New Strategy"
+      },
+      "priorFields": {
+        "Title": "Bzbzbsb"
+      },
+      "pkFieldName": "StrategyId",
+      "pkValue": "Hdbddnd",
+      "at": "2026-08-21T00:27:17.292Z"
+    },
+    {
+      "type": "row-edit",
+      "table": "Topics",
+      "rowId": "Xhdbdbx",
+      "fields": {
+        "Title": "Som Random Topic"
+      },
+      "priorFields": {
+        "Title": "Zxnxbxn"
+      },
+      "pkFieldName": "TopicId",
+      "pkValue": "Xhdbdbx",
+      "at": "2026-08-21T00:27:25.308Z"
+    },
+    {
+      "type": "row-edit",
+      "table": "Scenarios",
+      "rowId": "Shaba",
+      "fields": {
+        "Strategy": "Hdbddnd"
+      },
+      "priorFields": {
+        "Strategy": "To"
+      },
+      "pkFieldName": "ScenarioId",
+      "pkValue": "Shaba",
+      "at": "2026-08-21T00:27:33.495Z"
+    }
+  ]
+}

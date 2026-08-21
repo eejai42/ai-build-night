@@ -1,54 +1,70 @@
 {
   "$schema": "https://example.com/cmcc-schema/v1",
   "Name": "AI Build Night",
-  "Description": "A rulebook for tracking the pros and cons of AI in education, organized as an extensible set of Axes (dimensions of AI use in education), each illustrated by example Scenarios and broken down into individual Considerations (pros and cons).",
-  "Axes": {
-    "Description": "Table: Axes. A distinct dimension, angle, or vector along which AI's impact on education can be examined -- e.g. 'Essay Writing vs. AI-Assisted Exploration'. New axes can be added freely as the project's scope grows.",
+  "Description": "A rulebook for tracking the pros and cons of AI in education, organized as an extensible set of Topics (broad questions or subject areas), each broken into Strategies (specific approaches or angles within that topic), each illustrated by example Scenarios and broken down into individual Considerations (pros and cons).",
+  "Topics": {
+    "Description": "Table: Topics. A broad question or subject area about AI's impact on education -- e.g. 'AI in the Classroom' or 'Should College Still Be 4 Years?'. New topics can be added freely as the project's scope grows.",
     "schema": [
-      { "name": "AxisId", "datatype": "string", "type": "raw", "nullable": false, "Description": "Stored identifier for the axis. Slug form, e.g. 'essay-vs-ai-conversation'." },
-      { "name": "Name", "datatype": "string", "type": "calculated", "nullable": false, "Description": "Display alias for the axis.", "formula": "={{AxisId}}" },
-      { "name": "Title", "datatype": "string", "type": "raw", "nullable": false, "Description": "Short human-readable title of the axis, e.g. 'Essay Writing vs. AI-Assisted Exploration'." },
-      { "name": "Summary", "datatype": "string", "type": "raw", "nullable": true, "Description": "One or two sentence summary of what this axis examines." },
-      { "name": "Scenarios", "datatype": "string", "type": "relationship", "nullable": true, "RelatedTo": "Scenarios", "Description": "Example scenarios that illustrate this axis in practice." },
-      { "name": "Considerations", "datatype": "string", "type": "relationship", "nullable": true, "RelatedTo": "Considerations", "Description": "Individual pros and cons recorded against this axis." },
-      { "name": "CountOfConsiderations", "datatype": "integer", "type": "aggregation", "nullable": true, "Description": "Total number of pros and cons recorded for this axis.", "formula": "=COUNTIFS(Considerations!{{Axis}}, Axes!{{AxisId}})" },
-      { "name": "CountOfPros", "datatype": "integer", "type": "aggregation", "nullable": true, "Description": "Number of pro considerations recorded for this axis.", "formula": "=COUNTIFS(Considerations!{{Axis}}, Axes!{{AxisId}}, Considerations!{{IsPro}}, TRUE())" },
-      { "name": "CountOfCons", "datatype": "integer", "type": "aggregation", "nullable": true, "Description": "Number of con considerations recorded for this axis.", "formula": "=COUNTIFS(Considerations!{{Axis}}, Axes!{{AxisId}}, Considerations!{{IsPro}}, FALSE())" }
+      { "name": "TopicId", "datatype": "string", "type": "raw", "nullable": false, "Description": "Stored identifier for the topic. Slug form, e.g. 'four-year-college'." },
+      { "name": "Name", "datatype": "string", "type": "calculated", "nullable": false, "Description": "Display alias for the topic.", "formula": "={{TopicId}}" },
+      { "name": "Title", "datatype": "string", "type": "raw", "nullable": false, "Description": "Short human-readable title of the topic, e.g. 'Should College Still Be 4 Years?'." },
+      { "name": "Summary", "datatype": "string", "type": "raw", "nullable": true, "Description": "One or two sentence summary of what this topic covers." },
+      { "name": "Strategies", "datatype": "string", "type": "relationship", "nullable": true, "RelatedTo": "Strategies", "Description": "Strategies (specific approaches or angles) explored within this topic." },
+      { "name": "CountOfStrategies", "datatype": "integer", "type": "aggregation", "nullable": true, "Description": "Total number of strategies recorded under this topic.", "formula": "=COUNTIFS(Strategies!{{Topic}}, Topics!{{TopicId}})" }
     ],
     "data": [
-      { "AxisId": "essay-vs-ai-conversation", "Title": "Essay Writing vs. AI-Assisted Exploration", "Summary": "Instead of assigning a written essay, the assignment becomes an exploratory conversation with an LLM, submitted as a shareable conversation link rather than a document." }
+      { "TopicId": "ai-in-education", "Title": "AI in Education", "Summary": "How AI changes classroom assignments, teaching methods, and what counts as evidence of learning." }
+    ]
+  },
+  "Strategies": {
+    "Description": "Table: Strategies. A distinct approach, angle, or vector explored within a topic -- e.g. 'Essay Writing vs. AI-Assisted Exploration'. New strategies can be added freely as a topic's scope grows.",
+    "schema": [
+      { "name": "StrategyId", "datatype": "string", "type": "raw", "nullable": false, "Description": "Stored identifier for the strategy. Slug form, e.g. 'essay-vs-ai-conversation'." },
+      { "name": "Name", "datatype": "string", "type": "calculated", "nullable": false, "Description": "Display alias for the strategy.", "formula": "={{StrategyId}}" },
+      { "name": "Topic", "datatype": "string", "type": "relationship", "nullable": false, "RelatedTo": "Topics", "Description": "The topic this strategy belongs to." },
+      { "name": "TopicTitle", "datatype": "string", "type": "lookup", "nullable": true, "Description": "Title of the parent topic.", "formula": "=INDEX(Topics!{{Title}}, MATCH({{Topic}}, Topics!{{TopicId}}, 0))" },
+      { "name": "Title", "datatype": "string", "type": "raw", "nullable": false, "Description": "Short human-readable title of the strategy, e.g. 'Essay Writing vs. AI-Assisted Exploration'." },
+      { "name": "Summary", "datatype": "string", "type": "raw", "nullable": true, "Description": "One or two sentence summary of what this strategy examines." },
+      { "name": "Scenarios", "datatype": "string", "type": "relationship", "nullable": true, "RelatedTo": "Scenarios", "Description": "Example scenarios that illustrate this strategy in practice." },
+      { "name": "Considerations", "datatype": "string", "type": "relationship", "nullable": true, "RelatedTo": "Considerations", "Description": "Individual pros and cons recorded against this strategy." },
+      { "name": "CountOfConsiderations", "datatype": "integer", "type": "aggregation", "nullable": true, "Description": "Total number of pros and cons recorded for this strategy.", "formula": "=COUNTIFS(Considerations!{{Strategy}}, Strategies!{{StrategyId}})" },
+      { "name": "CountOfPros", "datatype": "integer", "type": "aggregation", "nullable": true, "Description": "Number of pro considerations recorded for this strategy.", "formula": "=COUNTIFS(Considerations!{{Strategy}}, Strategies!{{StrategyId}}, Considerations!{{IsPro}}, TRUE())" },
+      { "name": "CountOfCons", "datatype": "integer", "type": "aggregation", "nullable": true, "Description": "Number of con considerations recorded for this strategy.", "formula": "=COUNTIFS(Considerations!{{Strategy}}, Strategies!{{StrategyId}}, Considerations!{{IsPro}}, FALSE())" }
+    ],
+    "data": [
+      { "StrategyId": "essay-vs-ai-conversation", "Topic": "ai-in-education", "Title": "Essay Writing vs. AI-Assisted Exploration", "Summary": "Instead of assigning a written essay, the assignment becomes an exploratory conversation with an LLM, submitted as a shareable conversation link rather than a document." }
     ]
   },
   "Scenarios": {
-    "Description": "Table: Scenarios. A concrete example that illustrates how an axis plays out in practice, such as a specific classroom assignment.",
+    "Description": "Table: Scenarios. A concrete example that illustrates how a strategy plays out in practice, such as a specific classroom assignment.",
     "schema": [
       { "name": "ScenarioId", "datatype": "string", "type": "raw", "nullable": false, "Description": "Stored identifier for the scenario. Slug form." },
       { "name": "Name", "datatype": "string", "type": "calculated", "nullable": false, "Description": "Display alias for the scenario.", "formula": "={{ScenarioId}}" },
-      { "name": "Axis", "datatype": "string", "type": "relationship", "nullable": false, "RelatedTo": "Axes", "Description": "The axis this scenario illustrates." },
-      { "name": "AxisTitle", "datatype": "string", "type": "lookup", "nullable": true, "Description": "Title of the parent axis.", "formula": "=INDEX(Axes!{{Title}}, MATCH({{Axis}}, Axes!{{AxisId}}, 0))" },
+      { "name": "Strategy", "datatype": "string", "type": "relationship", "nullable": false, "RelatedTo": "Strategies", "Description": "The strategy this scenario illustrates." },
+      { "name": "StrategyTitle", "datatype": "string", "type": "lookup", "nullable": true, "Description": "Title of the parent strategy.", "formula": "=INDEX(Strategies!{{Title}}, MATCH({{Strategy}}, Strategies!{{StrategyId}}, 0))" },
       { "name": "Title", "datatype": "string", "type": "raw", "nullable": false, "Description": "Short title of the scenario." },
       { "name": "Description", "datatype": "string", "type": "raw", "nullable": true, "Description": "Full description of how the scenario plays out." }
     ],
     "data": [
-      { "ScenarioId": "llm-conversation-assignment", "Axis": "essay-vs-ai-conversation", "Title": "LLM Conversation as the Assignment", "Description": "Rather than composing an essay about a subject, the student explores that same subject in conversation form with an LLM. The result submitted is a link to the conversation, not a document. The teacher can then ask the LLM about the conversation, or read the transcript directly." }
+      { "ScenarioId": "llm-conversation-assignment", "Strategy": "essay-vs-ai-conversation", "Title": "LLM Conversation as the Assignment", "Description": "Rather than composing an essay about a subject, the student explores that same subject in conversation form with an LLM. The result submitted is a link to the conversation, not a document. The teacher can then ask the LLM about the conversation, or read the transcript directly." }
     ]
   },
   "Considerations": {
-    "Description": "Table: Considerations. A single pro or con recorded against an axis.",
+    "Description": "Table: Considerations. A single pro or con recorded against a strategy.",
     "schema": [
       { "name": "ConsiderationId", "datatype": "string", "type": "raw", "nullable": false, "Description": "Stored identifier for the consideration. Slug form." },
       { "name": "Name", "datatype": "string", "type": "calculated", "nullable": false, "Description": "Display alias for the consideration.", "formula": "={{ConsiderationId}}" },
-      { "name": "Axis", "datatype": "string", "type": "relationship", "nullable": false, "RelatedTo": "Axes", "Description": "The axis this consideration belongs to." },
-      { "name": "AxisTitle", "datatype": "string", "type": "lookup", "nullable": true, "Description": "Title of the parent axis.", "formula": "=INDEX(Axes!{{Title}}, MATCH({{Axis}}, Axes!{{AxisId}}, 0))" },
+      { "name": "Strategy", "datatype": "string", "type": "relationship", "nullable": false, "RelatedTo": "Strategies", "Description": "The strategy this consideration belongs to." },
+      { "name": "StrategyTitle", "datatype": "string", "type": "lookup", "nullable": true, "Description": "Title of the parent strategy.", "formula": "=INDEX(Strategies!{{Title}}, MATCH({{Strategy}}, Strategies!{{StrategyId}}, 0))" },
       { "name": "IsPro", "datatype": "boolean", "type": "raw", "nullable": false, "Description": "TRUE if this consideration is a pro (benefit); FALSE if it is a con (drawback)." },
       { "name": "Statement", "datatype": "string", "type": "raw", "nullable": false, "Description": "The pro or con itself, stated in a sentence." },
       { "name": "Kind", "datatype": "string", "type": "calculated", "nullable": true, "Description": "Human-readable label for whether this is a pro or a con.", "formula": "=IF({{IsPro}}, \"Pro\", \"Con\")" }
     ],
     "data": [
-      { "ConsiderationId": "authentic-exploration", "Axis": "essay-vs-ai-conversation", "IsPro": true, "Statement": "A conversation format encourages genuine back-and-forth exploration of ideas rather than front-loading a fixed thesis." },
-      { "ConsiderationId": "loses-writing-practice", "Axis": "essay-vs-ai-conversation", "IsPro": false, "Statement": "Students get less practice organizing their own thoughts into sustained, structured written prose." },
-      { "ConsiderationId": "teacher-can-audit-reasoning", "Axis": "essay-vs-ai-conversation", "IsPro": true, "Statement": "The teacher can review the full conversation transcript, or ask the LLM directly about it, giving visibility into the student's reasoning process that a finished essay doesn't show." },
-      { "ConsiderationId": "conversation-quality-varies", "Axis": "essay-vs-ai-conversation", "IsPro": false, "Statement": "The quality of what a student learns depends heavily on how well they prompt the LLM, which is an unevenly distributed skill." }
+      { "ConsiderationId": "authentic-exploration", "Strategy": "essay-vs-ai-conversation", "IsPro": true, "Statement": "A conversation format encourages genuine back-and-forth exploration of ideas rather than front-loading a fixed thesis." },
+      { "ConsiderationId": "loses-writing-practice", "Strategy": "essay-vs-ai-conversation", "IsPro": false, "Statement": "Students get less practice organizing their own thoughts into sustained, structured written prose." },
+      { "ConsiderationId": "teacher-can-audit-reasoning", "Strategy": "essay-vs-ai-conversation", "IsPro": true, "Statement": "The teacher can review the full conversation transcript, or ask the LLM directly about it, giving visibility into the student's reasoning process that a finished essay doesn't show." },
+      { "ConsiderationId": "conversation-quality-varies", "Strategy": "essay-vs-ai-conversation", "IsPro": false, "Statement": "The quality of what a student learns depends heavily on how well they prompt the LLM, which is an unevenly distributed skill." }
     ]
   }
 }
